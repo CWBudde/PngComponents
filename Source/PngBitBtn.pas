@@ -3,7 +3,8 @@ unit PngBitBtn;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, Buttons, pngimage, PngFunctions;
+  Windows, Messages, Classes, Graphics, Controls, Buttons, PngImage,
+  PngFunctions;
 
 type
   TPngBitBtn = class(TBitBtn)
@@ -107,9 +108,9 @@ end;
 
 destructor TPngBitBtn.Destroy;
 begin
+  inherited Destroy;
   FPngImage.Free;
   FCanvas.Free;
-  inherited Destroy;
 end;
 
 procedure TPngBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
@@ -322,12 +323,11 @@ begin
     inherited;
     Exit;
   end;
-  DrawRect := Control.ClientRect;
   if FPressed then
     Details := StyleServices.GetElementDetails(tbPushButtonPressed)
   else if AMouseInControl then
     Details := StyleServices.GetElementDetails(tbPushButtonHot)
-  else if Focused then
+  else if Focused or TPngBitBtn(Control).Default then
     Details := StyleServices.GetElementDetails(tbPushButtonDefaulted)
   else if Control.Enabled then
     Details := StyleServices.GetElementDetails(tbPushButtonNormal)
@@ -376,21 +376,8 @@ begin
     TextRect := Rect(0, 0, 0, 0);
   end;
 
-  OffsetRect(TextRect, TextPos.X + btn.ClientRect.Left + Offset.X, TextPos.Y + btn.ClientRect.Top + Offset.Y);
+  OffsetRect(TextRect, TextPos.X + btn.ClientRect.Left, TextPos.Y + btn.ClientRect.Top);
   StyleServices.DrawText(ACanvas.Handle, Details, btn.Caption, TextRect, LFormats, LColor);
-
-  //Draw the focus rectangle
-  if btn.IsFocused //and IsDefault
-    then begin
-    if not StyleServices.Enabled then begin
-      R := Control.ClientRect;
-      InflateRect(R, -3, -3);
-    end;
-    ACanvas.Pen.Color := clWindowFrame;
-    ACanvas.Brush.Color := clBtnFace;
-    DrawFocusRect(ACanvas.Handle, R);
-  end;
-
 end;
 {$IFEND}
 
