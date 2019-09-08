@@ -49,7 +49,7 @@ type
 implementation
 
 uses
-  ActnList, Themes, PngButtonFunctions;
+  ActnList, Themes, PngButtonFunctions, PngImageList;
 
 {$IF RTLVersion < 23.0 }
 type
@@ -309,8 +309,7 @@ const
   WordBreakFlag: array[Boolean] of Integer = (0, DT_WORDBREAK);
 var
   Details:  TThemedElementDetails;
-  DrawRect, PaintRect, R, TextRect: TRect;
-  Offset: TPoint;
+  DrawRect, PaintRect, TextRect: TRect;
   State: TButtonState;
   btn : TPngBitBtn;
   GlyphPos, TextPos: TPoint;
@@ -342,7 +341,6 @@ begin
   if not btn.Enabled then State := bsDisabled
   else if FPressed then State := bsDown
   else State := bsUp;
-
 
   //Calculate the position of the PNG glyph
   CalcButtonLayout(ACanvas, btn.FPngImage, btn.ClientRect, FPressed, False, btn.Caption,
